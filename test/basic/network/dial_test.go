@@ -87,3 +87,12 @@ func TestDialUDPClient(t *testing.T) {
 	conn.Write([]byte("hello"))
 	fmt.Printf("<%s>\n", conn.RemoteAddr())
 }
+
+func TestGetLocalIp(t *testing.T) {
+	conn, err := net.Dial("udp", "127.0.0.1:9981")
+	if err != nil {
+		fmt.Printf("get local ip error.")
+	}
+	localAddress := conn.LocalAddr().(*net.UDPAddr)
+	fmt.Println(localAddress.String())
+}
