@@ -1,0 +1,52 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Golang api of demo",
+        "title": "haimait.com开发文档",
+        "termsOfService": "haimait.com",
+        "contact": {
+            "name": "API Support",
+            "url": "haimait.com",
+            "email": "×××@qq.com"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api/v1/",
+    "paths": {
+        "/getUser/:id": {
+            "get": {
+                "description": "获取指定getUser记录2",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试"
+                ],
+                "summary": "获取指定getUser记录1",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户name",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
