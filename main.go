@@ -6,6 +6,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"learning-go/docs"
+	"learning-go/test/framework/gin/controller"
 	"net/http"
 	"strconv"
 )
@@ -29,8 +30,8 @@ func main() {
 	docs.SwaggerInfo.Title = "Swagger Example API"
 	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "petstore.swagger.io"
-	docs.SwaggerInfo.BasePath = "/v2"
+	//docs.SwaggerInfo.Host = "127.0.0.1"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	r := gin.New()
 	swagHandler := true
@@ -44,6 +45,16 @@ func main() {
 	v1 := r.Group("/api/v1")
 
 	v1.GET("/getUser/:id", getUser)
+	c := controller.NewController()
+	accounts := v1.Group("/accounts")
+	{
+		accounts.GET(":id", c.ShowAccount)
+		accounts.GET("", c.ListAccounts)
+		accounts.POST("", c.AddAccount)
+		accounts.DELETE(":id", c.DeleteAccount)
+		accounts.PATCH(":id", c.UpdateAccount)
+		accounts.POST(":id/images", c.UploadAccountImage)
+	}
 
 	r.Run()
 }
