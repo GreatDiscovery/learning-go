@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"learning-go/docs"
 	"net/http"
 	"strconv"
 )
@@ -23,6 +24,14 @@ import (
 // @contact.email ×××@qq.com
 // @BasePath /api/v1/
 func main() {
+
+	// programmatically set swagger info
+	docs.SwaggerInfo.Title = "Swagger Example API"
+	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "petstore.swagger.io"
+	docs.SwaggerInfo.BasePath = "/v2"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	r := gin.New()
 	swagHandler := true
 	if swagHandler {

@@ -4,6 +4,7 @@ go 1.21rc2
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.1
