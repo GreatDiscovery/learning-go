@@ -1,4 +1,4 @@
-package main
+package concurrent
 
 //https://laravelacademy.org/post/19928
 import (

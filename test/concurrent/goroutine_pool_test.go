@@ -1,4 +1,4 @@
-package main
+package concurrent
 
 import (
 	"fmt"
@@ -71,6 +71,7 @@ func NewCoroutinePool(name string, maxSize int, numThreads int) *CoroutinePool {
 }
 
 // fixme it doesn't work
+// todo
 func TestGoroutinePool(t *testing.T) {
 	task := func() {
 		fmt.Println("Task executed")
@@ -78,9 +79,18 @@ func TestGoroutinePool(t *testing.T) {
 		return
 	}
 	p := NewCoroutinePool("CoroutinePool", 10, 5)
-	p.Submit(task)
 	p.Start()
+	p.Submit(task)
 	runtime.Gosched()
 	time.Sleep(5 * time.Second)
 	p.Stop()
+}
+
+func TestFunc(t *testing.T) {
+	task := func() {
+		fmt.Println("Task executed")
+		fmt.Println("Task executed")
+		return
+	}
+	task()
 }
