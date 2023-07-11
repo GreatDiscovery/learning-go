@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"testing"
+)
 
-func main() {
-	fmt.Print("hello world!")
+func TestIf(t *testing.T) {
+	var str string
+	str = ""
+	if str != "" {
+		print(true)
+	}
 }
