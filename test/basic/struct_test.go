@@ -39,3 +39,22 @@ func TestJson(t *testing.T) {
 	}
 	fmt.Println(string(data))
 }
+
+type LowerCase struct {
+	title  string
+	author string
+}
+
+func TestStructLowerCase(t *testing.T) {
+	book := LowerCase{
+		title:  "平凡的世界",
+		author: "路遥",
+	}
+
+	data, err := json.Marshal(book)
+	if err != nil {
+		return
+	}
+	// 首字母小写无法json解析，因为首字母小写权限是私有的
+	println(string(data))
+}
