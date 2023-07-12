@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors" // 用来打印堆栈
 	"strings"
 	"testing"
 )
@@ -49,7 +48,7 @@ func TestRemoveLF2(t *testing.T) {
 }
 
 type A struct {
-	Name map[string]interface{} `json:"name,string"`
+	Name map[string]interface{} `json:"name"`
 	Age  int64                  `json:"age"`
 }
 
@@ -57,9 +56,10 @@ func TestJsonTest3(t *testing.T) {
 	var a A
 	str := "{\n    \"name\": \"\",\n    \"age\": 3\n} "
 	err := json.Unmarshal([]byte(str), &a)
+	//if err != nil {
+	//	fmt.Printf("%+v\n", errors.Wrap(err, "打印堆栈"))
+	//}
 	if err != nil {
-		fmt.Printf("%+v\n", errors.Wrap(err, "打印堆栈"))
-	} else {
-		println(a.Name)
+		println(err.Error())
 	}
 }
