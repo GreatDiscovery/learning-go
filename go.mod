@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-ini/ini v1.67.0
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/panjf2000/ants/v2 v2.8.1
 	github.com/swaggo/files v1.0.1
