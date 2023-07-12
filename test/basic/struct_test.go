@@ -13,6 +13,14 @@ type Books struct {
 	BookId  int    `json:"book_id,omitempty"`
 }
 
+func (b Books) String() string {
+	marshal, err := json.Marshal(b)
+	if err != nil {
+		return ""
+	}
+	return string(marshal)
+}
+
 func TestStruct(t *testing.T) {
 
 	// 创建一个新的结构体
@@ -38,6 +46,8 @@ func TestJson(t *testing.T) {
 		return
 	}
 	fmt.Println(string(data))
+	fmt.Println("------------")
+	fmt.Println(book.String())
 }
 
 type LowerCase struct {
@@ -57,4 +67,41 @@ func TestStructLowerCase(t *testing.T) {
 	}
 	// 首字母小写无法json解析，因为首字母小写权限是私有的
 	println(string(data))
+}
+
+type Base struct {
+}
+
+// @Deprecated 该方法由于不知道子类的类型，所以无法解析
+func (receiver *Base) JsonString() string {
+	data, err := json.Marshal(receiver)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+type BaseA struct {
+	Base
+	Name string `json:"name"`
+}
+
+type BaseB struct {
+	Base
+	Name string `json:"name"`
+}
+
+func JsonString(str interface{}) string {
+	data, err := json.Marshal(str)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func TestFuncInherit(t *testing.T) {
+	a := BaseA{Name: "BaseA"}
+	b := BaseB{Name: "BaseB"}
+	println(JsonString(a))
+	println(JsonString(b))
 }
