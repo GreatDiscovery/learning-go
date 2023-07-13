@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"testing"
 )
 
@@ -56,4 +57,20 @@ func TestTransitional(t *testing.T) {
 		panic(err)
 	}
 	tx.Commit()
+}
+
+func TestInsertIgnore(t *testing.T) {
+	db := InitDb()
+	user := &User{
+		Name: "jiayun2",
+		Age:  13,
+	}
+	result := db.Clauses(clause.OnConflict{DoNothing: true}).Create(&user)
+	fmt.Printf("user.id=%d\n", user.Id)
+	fmt.Printf("result.RowsAffected=%d\n", result.RowsAffected)
+
+	// Do nothing on conflict
+	if err := db.Clauses(clause.OnConflict{DoNothing: true}).Create(&user).Error; err != nil {
+		fmt.Println(err.Error())
+	}
 }
