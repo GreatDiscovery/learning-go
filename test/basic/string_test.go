@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/json-iterator/go"
 	"strings"
 	"testing"
 )
@@ -52,14 +53,60 @@ type A struct {
 	Age  int64                  `json:"age"`
 }
 
-func TestJsonTest3(t *testing.T) {
+func TestJsoner(t *testing.T) {
 	var a A
-	str := "{\n    \"name\": \"\",\n    \"age\": 3\n} "
+	str := "{\n    \"name\": \"\",\n    \"age\": 3\n}"
+	err := jsoniter.Unmarshal([]byte(str), &a)
+	if err != nil {
+		println(err.Error())
+	} else {
+		println("success")
+	}
+}
+
+func TestJson3(t *testing.T) {
+	var a A
+	str := "{\n    \"name\": \"\",\n    \"age\": 3\n}"
 	err := json.Unmarshal([]byte(str), &a)
-	//if err != nil {
-	//	fmt.Printf("%+v\n", errors.Wrap(err, "打印堆栈"))
-	//}
 	if err != nil {
 		println(err.Error())
 	}
+}
+
+type B struct {
+	Data interface{}
+	Code int64
+}
+
+func TestTypeAssert2(t *testing.T) {
+	var b B
+	str := "{\n    \"Data\": \"\",\n    \"Code\": 200\n} "
+	err := json.Unmarshal([]byte(str), &b)
+	if err != nil {
+		println(err.Error())
+	}
+	println(typeof(b.Data))
+
+	println(typeof(b.Code))
+
+	var b2 B
+	str2 := "{\n    \"Data\": {\n        \"name\": \"jiayun\",\n        \"age\": 18\n    },\n    \"Code\": 200\n} "
+	err2 := json.Unmarshal([]byte(str2), &b2)
+	if err2 != nil {
+		println(err2.Error())
+	}
+	println(typeof(b2.Data))
+	println(typeof(b2.Code))
+
+	switch b2.Data.(type) {
+	case string:
+		println("type is string")
+	case map[string]interface{}:
+		println("type is map")
+	}
+
+}
+
+func typeof(v interface{}) string {
+	return fmt.Sprintf("%T", v)
 }
