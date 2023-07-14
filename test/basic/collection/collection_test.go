@@ -5,6 +5,19 @@ import (
 	"testing"
 )
 
+func TestSliceDeleteItem(t *testing.T) {
+	var arr = []int{1, 2, 3, 4, 5}
+	for i := 0; i < len(arr); {
+		if arr[i]%2 == 0 {
+			// ...代表可变参数
+			arr = append(arr[:i], arr[i+1:]...)
+		} else {
+			i++
+		}
+	}
+	fmt.Printf("after del:%v", arr)
+}
+
 func TestSlice(t *testing.T) {
 	var x = make([]int, 3, 5)
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(x), cap(x), x)
