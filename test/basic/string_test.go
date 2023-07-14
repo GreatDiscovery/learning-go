@@ -15,6 +15,27 @@ type Body struct {
 	Success int                    `json:"success"`
 }
 
+// 算法最长公共前缀
+func TestLongestCommonPrefix(t *testing.T) {
+	strs := []string{"flower", "flow", "flight"}
+	result := findLongestCommonPrefix(strs)
+	fmt.Println(result) // 输出 "hello"
+}
+
+func findLongestCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	for i := 0; i < len(strs[0]); i++ {
+		for j := 1; j < len(strs); j++ {
+			if i == len(strs[j]) || strs[j][i] != strs[0][i] {
+				return strs[0][:i]
+			}
+		}
+	}
+	return strs[0]
+}
+
 // 去除json转换过程中的换行符
 func TestRemoveLF(t *testing.T) {
 	var body Body
