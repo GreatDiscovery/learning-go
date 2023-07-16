@@ -65,3 +65,20 @@ func TestChannelWithClose(t *testing.T) {
 		fmt.Println(i)
 	}
 }
+
+// channel可以同步，比如阻塞等待main进程
+func TestChannelSync(t *testing.T) {
+	c := make(chan int)
+	go sum2(c)
+	// 读取channel，会一直阻塞
+	<-c
+}
+
+func sum2(i chan int) {
+	sum := 0
+	for i := 0; i < 10000; i++ {
+		sum += i
+	}
+	println(sum)
+	i <- sum
+}
