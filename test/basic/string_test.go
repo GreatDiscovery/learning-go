@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/json-iterator/go"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -13,6 +14,16 @@ type Body struct {
 	Data    map[string]interface{} `json:"data,omitempty"`
 	Message string                 `json:"message"`
 	Success int                    `json:"success"`
+}
+
+func TestString2Int(t *testing.T) {
+	str1 := ""
+	i1, err := strconv.Atoi(str1)
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	println(i1)
 }
 
 // 算法最长公共前缀

@@ -47,4 +47,6 @@ func TestMap(t *testing.T) {
 	} else {
 		fmt.Println("Facebook 站点不存在")
 	}
+
+	fmt.Println("长度是", len(siteMap))
 }
