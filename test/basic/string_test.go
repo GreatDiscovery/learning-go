@@ -16,6 +16,15 @@ type Body struct {
 	Success int                    `json:"success"`
 }
 
+func TestTrimLeft(t *testing.T) {
+	str := "corvus-rec-top-note-breakdown-realtime"
+	// trimLeft有坑，只截取unicode， 特殊符号不截取
+	left := strings.TrimLeft(str, "corvus-")
+	println(left)
+	left2 := strings.TrimPrefix(str, "corvus-")
+	println(left2)
+}
+
 func TestString2Int(t *testing.T) {
 	str1 := ""
 	i1, err := strconv.Atoi(str1)

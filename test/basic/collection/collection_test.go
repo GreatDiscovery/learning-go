@@ -5,6 +5,23 @@ import (
 	"testing"
 )
 
+func TestSet(t *testing.T) {
+	testCase := []string{"1", "2", "3", "2", "4", "4"}
+	set := make(map[string]bool)
+	for _, s := range testCase {
+		_, ok := set[s]
+		if ok {
+			continue
+		}
+		set[s] = true
+	}
+	var list []string
+	for k, _ := range set {
+		list = append(list, k)
+	}
+	fmt.Println(list)
+}
+
 func TestSliceDeleteItem(t *testing.T) {
 	var arr = []int{1, 2, 3, 4, 5}
 	for i := 0; i < len(arr); {
