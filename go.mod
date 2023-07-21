@@ -3,6 +3,8 @@ module learning-go
 go 1.20
 
 require (
+	github.com/W1llyu/ourjson v0.0.0-20180613080540-341d4810db86
+	github.com/bitly/go-simplejson v0.5.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-ini/ini v1.67.0
 	github.com/gofrs/uuid v4.2.0+incompatible
