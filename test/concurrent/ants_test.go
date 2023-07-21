@@ -13,6 +13,23 @@ import (
 
 var sum1 int32
 
+func Test5(t *testing.T) {
+
+	num := 1
+
+	switch num {
+	case 1:
+		fmt.Println("This is the first number.")
+	case 2:
+		fmt.Println("This is the second number.")
+	case 3:
+		fmt.Println("This is the third number.")
+	default:
+		fmt.Println("This is not the first, second, or third number.")
+	}
+
+}
+
 func myFunc(i interface{}) {
 	n := i.(int32)
 	atomic.AddInt32(&sum1, n)
