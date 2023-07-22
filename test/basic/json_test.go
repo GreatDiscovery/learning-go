@@ -5,10 +5,17 @@ import (
 	"fmt"
 	"github.com/W1llyu/ourjson"
 	"github.com/bitly/go-simplejson"
+	"github.com/valyala/fastjson"
 	"reflect"
 	"strconv"
 	"testing"
 )
+
+func TestFastJson(t *testing.T) {
+	s := []byte(`{"foo": [123, "bar"]}`)
+	fmt.Printf("foo.0=%d\n", fastjson.GetInt(s, "foo", "0"))
+
+}
 
 func TestOurJson(t *testing.T) {
 	defer func() {

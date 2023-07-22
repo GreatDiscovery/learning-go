@@ -1,10 +1,11 @@
-package main
+package db
 
 import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 	"testing"
 )
 
@@ -26,6 +27,7 @@ func InitDb() *gorm.DB {
 	if err != nil {
 		return nil
 	}
+	db.Logger.LogMode(logger.Info)
 	return db
 }
 
