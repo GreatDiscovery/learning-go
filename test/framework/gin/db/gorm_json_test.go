@@ -95,4 +95,8 @@ func TestJsonType(t *testing.T) {
 	// MySQL
 	// SELECT * FROM `users` WHERE JSON_EXTRACT(`attributes`, '$.role') IS NOT NULL
 	// SELECT * FROM `users` WHERE JSON_EXTRACT(`attributes`, '$.orgs.orga') IS NOT NULL
+	result := DB.Delete(&UserWithJSON{}, 1)
+	if result.Error != nil {
+		panic(result.Error)
+	}
 }

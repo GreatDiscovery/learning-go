@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"testing"
 )
 
@@ -23,11 +24,26 @@ func (User) TableName() string {
 
 func InitDb() *gorm.DB {
 	dsn := "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	db.NamingStrategy = schema.NamingStrategy{SingularTable: true}
 	if err != nil {
 		return nil
 	}
-	db.Logger.LogMode(logger.Info)
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	db.NamingStrategy = schema.NamingStrategy{
+		TablePrefix:         "",
+		SingularTable:       true,
+		NameReplacer:        nil,
+		NoLowerCase:         false,
+		IdentifierMaxLength: 0,
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(10)
 	return db
 }
 
@@ -48,6 +64,7 @@ func TestTransitional(t *testing.T) {
 		Name: "jiayun2",
 		Age:  13,
 	}
+
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
