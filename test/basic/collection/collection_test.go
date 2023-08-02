@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+type StringWalker func(s string) bool
+
+func WalkList(strList []string, walker StringWalker) {
+	for _, s := range strList {
+		if walker(s) {
+			println(s)
+			return
+		}
+	}
+}
+
+func TestWalker(t *testing.T) {
+	testCase := []string{"6", "2", "3", "2", "4", "4"}
+	WalkList(testCase, func(s string) bool {
+		if s == "3" {
+			return true
+		}
+		return false
+	})
+}
+
 func TestSet(t *testing.T) {
 	testCase := []string{"1", "2", "3", "2", "4", "4"}
 	set := make(map[string]bool)
