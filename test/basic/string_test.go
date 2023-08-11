@@ -16,6 +16,14 @@ type Body struct {
 	Success int                    `json:"success"`
 }
 
+// 测试string和byte[]之间互相转换
+func TestStr2Byte(t *testing.T) {
+	str1 := "hello world!"
+	arr1 := []byte(str1)
+	str2 := string(arr1)
+	println(str2)
+}
+
 func TestTrimLeft(t *testing.T) {
 	str := "corvus-rec-top-note-breakdown-realtime"
 	// trimLeft有坑，只截取unicode， 特殊符号不截取
