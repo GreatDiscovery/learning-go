@@ -13,6 +13,15 @@ type otherContext struct {
 	context.Context
 }
 
+type key struct{}
+
+func TestWithValue(t *testing.T) {
+	root := context.Background()
+	sub := context.WithValue(root, key{}, "key")
+	s, _ := sub.Value(key{}).(string)
+	fmt.Printf("s=%s\n", s)
+}
+
 func TestContext(t *testing.T) {
 	ctxa, cancel := context.WithCancel(context.Background())
 	go work(ctxa, "work1")
