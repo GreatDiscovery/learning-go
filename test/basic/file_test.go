@@ -6,12 +6,56 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 var (
 	conf = flag.String("conf", "../../conf/dev.ini", "conf")
 )
+
+func TestCreateFile(t *testing.T) {
+	if err := CreateDirAndFile(); err != nil {
+		panic(err)
+	}
+}
+
+func CreateDirAndFile() (err error) {
+	var paths []string
+	defer func() {
+		if err != nil {
+			for _, d := range paths {
+				os.RemoveAll(d)
+			}
+		}
+	}()
+	root := "/Users/songbowen/Documents/github/learning-go/tmp"
+	dir1 := filepath.Join(root, "dir1")
+
+	paths = append(paths, dir1)
+	if err := os.MkdirAll(dir1, 0777); err != nil {
+		return err
+	}
+
+	file1 := filepath.Join(dir1, "file1")
+	paths = append(paths, file1)
+	content := "write to file1, hello world! "
+	err = os.WriteFile(file1, []byte(content), 0777)
+	if err != nil {
+		return err
+	}
+
+	contentBytes, err := os.ReadFile(file1)
+	if err != nil {
+		return err
+	}
+	println(fmt.Sprintf("file content is %v", string(contentBytes)))
+
+	for _, d := range paths {
+		os.RemoveAll(d)
+	}
+	return nil
+}
 
 func TestIni(t *testing.T) {
 	flag.Parse()
