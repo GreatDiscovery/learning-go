@@ -75,6 +75,9 @@ func TestSliceDeleteItem(t *testing.T) {
 func TestSlice(t *testing.T) {
 	var x = make([]int, 3, 5)
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(x), cap(x), x)
+	testCase := []string{"1", "2", "3", "2", "4", "4"}
+	cutSlice := testCase[2]
+	fmt.Printf("cutSlice=%v", cutSlice)
 }
 
 func TestMap(t *testing.T) {

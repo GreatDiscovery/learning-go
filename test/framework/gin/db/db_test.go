@@ -50,20 +50,24 @@ func InitDb() *gorm.DB {
 // fixme 跑的有问题
 func TestQueryAllRecord(t *testing.T) {
 	db := InitDb()
-	results := make([]User, 100)
+	var results []User
+	var data []User
 	// batch query
 	db.Model(&User{}).Clauses().FindInBatches(&results, 1, func(tx *gorm.DB, batch int) error {
-		for _, _ = range results {
-			// 批量处理找到的记录
-			//results = append(results, result)
+
+		// 批量处理找到的记录
+		for _, result := range results {
+			data = append(data, result)
+
 		}
-		tx.Save(&results)
+
+		//tx.Save(&results)
 		fmt.Println(tx.RowsAffected)    // 本次批量操作影响的记录数
 		fmt.Printf("batch=%v\n", batch) // Batch 1, 2, 3
 		// 如果返回错误会终止后续批量操作
 		return nil
 	})
-	fmt.Printf("user=%v", results)
+	fmt.Printf("user=%v", data)
 }
 
 func TestConn(t *testing.T) {
