@@ -16,9 +16,10 @@ func TestP99(t *testing.T) {
 
 	// Compute the 50th, 90th, and 99th percentile.
 	q := quantile.NewTargeted(map[float64]float64{
-		0.50: 0.005,
-		0.90: 0.001,
-		0.99: 0.0001,
+		0.50:  0.005,
+		0.90:  0.001,
+		0.99:  0.0001,
+		0.999: 0.00001,
 	})
 	for v := range ch {
 		q.Insert(v)
@@ -27,6 +28,7 @@ func TestP99(t *testing.T) {
 	fmt.Println("perc50:", q.Query(0.50))
 	fmt.Println("perc90:", q.Query(0.90))
 	fmt.Println("perc99:", q.Query(0.99))
+	fmt.Println("perc999:", q.Query(0.999))
 	fmt.Println("count:", q.Count())
 }
 
