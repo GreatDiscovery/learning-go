@@ -70,4 +70,5 @@ func TestClient(t *testing.T) {
 		fmt.Printf("Found pod %s in namespace %s\n", pod, namespace)
 	}
 
+	clientset.CoreV1().Pods(namespace).Get()
 }
