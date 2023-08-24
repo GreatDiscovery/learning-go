@@ -6,6 +6,11 @@ import (
 	"testing"
 )
 
+func TestGetWd(t *testing.T) {
+	dir, _ := os.Getwd()
+	fmt.Println(dir)
+}
+
 func TestOsStat(t *testing.T) {
 	fileInfo, _ := os.Stat("/Users/songbowen/go/src/learning-go")
 	println(fileInfo.Name())
