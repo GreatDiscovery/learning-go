@@ -6,7 +6,7 @@ import (
 )
 
 func TestCrc16(t *testing.T) {
-	println(GetCRC16("_redis_rmt_check_1"))
+	println(GetCRC16("_redis_rmt_check_152689"))
 }
 
 // 根据key算出redis的slot
