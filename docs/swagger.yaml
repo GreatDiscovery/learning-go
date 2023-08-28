@@ -1,0 +1,206 @@
+basePath: /api/v1/
+definitions:
+  controller.Message:
+    properties:
+      message:
+        example: message
+        type: string
+    type: object
+  model.Account:
+    properties:
+      id:
+        example: 1
+        format: int64
+        type: integer
+      name:
+        example: account name
+        type: string
+      uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        format: uuid
+        type: string
+    type: object
+  model.AddAccount:
+    properties:
+      name:
+        example: account name
+        type: string
+    type: object
+  model.UpdateAccount:
+    properties:
+      name:
+        example: account name
+        type: string
+    type: object
+info:
+  contact:
+    email: ×××@qq.com
+    name: API Support
+    url: haimait.com
+  description: Golang api of demo
+  termsOfService: haimait.com
+  title: haimait.com开发文档
+  version: "1.0"
+paths:
+  /accounts:
+    get:
+      consumes:
+      - application/json
+      description: get accounts
+      parameters:
+      - description: name search by q
+        format: email
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Account'
+            type: array
+      summary: List accounts
+      tags:
+      - accounts
+    post:
+      consumes:
+      - application/json
+      description: add by json account
+      parameters:
+      - description: Add account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Add an account
+      tags:
+      - accounts
+  /accounts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete by account ID
+      parameters:
+      - description: Account ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Delete an account
+      tags:
+      - accounts
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Show an account
+      tags:
+      - accounts
+    patch:
+      consumes:
+      - application/json
+      description: Update by json account
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Account'
+      summary: Update an account
+      tags:
+      - accounts
+  /accounts/{id}/images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: account image
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.Message'
+      summary: Upload account image
+      tags:
+      - accounts
+  /getUser/:id:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定getUser记录2
+      parameters:
+      - description: 用户id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 用户name
+        in: query
+        name: name
+        type: string
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      summary: 获取指定getUser记录1
+      tags:
+      - 测试
+swagger: "2.0"
