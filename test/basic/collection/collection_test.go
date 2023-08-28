@@ -2,10 +2,26 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"testing"
 )
 
 type StringWalker func(s string) bool
+
+func TestSort(t *testing.T) {
+	testCase := []string{"1", "2", "3", "2", "4", "4"}
+	sort.Strings(testCase)
+	fmt.Printf("sort list = %v\n", testCase)
+
+	testCase2 := []float64{5, 7, 2, 1, 8, 6, 3, 4}
+	testCase3 := sort.Float64Slice(testCase2)
+	sort.Sort(testCase3)
+	fmt.Printf("case3 = %v\n", testCase3)
+
+	fmt.Printf("case2=%v\n", testCase2)
+	sort.Sort(sort.Reverse(sort.Float64Slice(testCase2)))
+	fmt.Printf("reverse case4=%v\n", testCase2)
+}
 
 func WalkList(strList []string, walker StringWalker) {
 	for _, s := range strList {
@@ -59,6 +75,9 @@ func TestSliceDeleteItem(t *testing.T) {
 func TestSlice(t *testing.T) {
 	var x = make([]int, 3, 5)
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(x), cap(x), x)
+	testCase := []string{"1", "2", "3", "2", "4", "4"}
+	cutSlice := testCase[2]
+	fmt.Printf("cutSlice=%v", cutSlice)
 }
 
 func TestMap(t *testing.T) {

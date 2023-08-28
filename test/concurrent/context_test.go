@@ -13,6 +13,25 @@ type otherContext struct {
 	context.Context
 }
 
+func TestMultiValue(t *testing.T) {
+	root := context.Background()
+	c1 := context.WithValue(root, "key1", "value1")
+	c2 := context.WithValue(c1, "key2", "value2")
+	c3 := context.WithValue(c2, "key3", "value3")
+
+	println(c3.Value("key1").(string))
+	println(c3.Value("key2").(string))
+	println(c3.Value("key3").(string))
+}
+
+func TestWithValue(t *testing.T) {
+	type key struct{}
+	root := context.Background()
+	sub := context.WithValue(root, key{}, "key")
+	s, _ := sub.Value(key{}).(string)
+	fmt.Printf("s=%s\n", s)
+}
+
 func TestContext(t *testing.T) {
 	ctxa, cancel := context.WithCancel(context.Background())
 	go work(ctxa, "work1")
