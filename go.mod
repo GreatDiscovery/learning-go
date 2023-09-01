@@ -6,8 +6,6 @@ require (
 	github.com/W1llyu/ourjson v0.0.0-20180613080540-341d4810db86
 	github.com/beorn7/perks v1.0.1
 	github.com/bitly/go-simplejson v0.5.1
-	github.com/eko/gocache/lib/v4 v4.1.4
-	github.com/eko/gocache/store/go_cache/v4 v4.2.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-ini/ini v1.67.0
 	github.com/gofrs/uuid v4.2.0+incompatible
@@ -15,6 +13,7 @@ require (
 	github.com/joaojeronimo/go-crc16 v0.0.0-20140729130949-59bd0194935e
 	github.com/json-iterator/go v1.1.12
 	github.com/panjf2000/ants/v2 v2.8.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/common v0.42.0
 	github.com/robfig/cron/v3 v3.0.0
@@ -25,6 +24,7 @@ require (
 	github.com/swaggo/swag v1.16.1
 	github.com/valyala/fastjson v1.6.4
 	go.etcd.io/bbolt v1.3.7
+	golang.org/x/sync v0.3.0
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
@@ -52,7 +52,6 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
@@ -71,7 +70,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
@@ -81,7 +79,6 @@ require (
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0 // indirect
 	golang.org/x/net v0.13.0 // indirect
 	golang.org/x/oauth2 v0.8.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
