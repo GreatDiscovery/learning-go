@@ -2,9 +2,49 @@ package concurrent
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 )
+
+import "sync"
+
+// 如果存在多个协程，其中一个协程出现了错误，我们应该如何处理
+func TestGoRoutineWithError(t *testing.T) {
+	var wg sync.WaitGroup
+	errors := make(chan error)
+
+	for i := 1; i <= 5; i++ {
+		wg.Add(1) // 增加等待组计数器
+		go func(id int) {
+			defer wg.Done() // 在协程结束时减少等待组计数器
+			err := doSomething(id)
+			if err != nil {
+				errors <- err // 将错误发送到通道
+			}
+		}(i)
+	}
+
+	go func() {
+		wg.Wait()     // 等待所有协程完成
+		close(errors) // 关闭错误通道，表示没有更多的错误了
+	}()
+
+	for err := range errors {
+		// 处理错误，只处理一次即可
+		fmt.Println("Error:", err)
+		break // 退出循环，不再接收更多的错误信息
+	}
+}
+
+func doSomething(id int) error {
+	if rand.Intn(2) == 0 {
+		fmt.Println("normal")
+		return nil // 没有错误发生，返回 nil
+	} else {
+		return fmt.Errorf("something went wrong") // 发生错误，返回错误
+	}
+}
 
 func say(s string) {
 	for i := 0; i < 5; i++ {
