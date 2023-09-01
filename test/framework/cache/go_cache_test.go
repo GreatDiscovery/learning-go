@@ -8,6 +8,21 @@ import (
 )
 
 type MyStruct struct {
+	Name string
+}
+
+func TestStoreObj(t *testing.T) {
+	c := cache.New(5*time.Minute, 10*time.Minute)
+	myStruct := MyStruct{Name: "gavin"}
+	c.Set("foo", &myStruct, time.Second*60)
+	bar, found := c.Get("foo")
+	if found {
+		fmt.Println(bar.(*MyStruct).Name)
+		bar.(*MyStruct).Name = "bar"
+	} else {
+		fmt.Println("nil")
+	}
+	fmt.Println(myStruct.Name)
 }
 
 func TestExpireTime(t *testing.T) {
