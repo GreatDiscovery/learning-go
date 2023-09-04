@@ -1,8 +1,11 @@
 package main
 
 import (
+	"github.com/rogpeppe/go-internal/testenv"
 	"log"
+	"os"
 	"os/exec"
+	"syscall"
 	"testing"
 )
 
@@ -22,4 +25,20 @@ func TestCommand(t *testing.T) {
 	log.Printf("Waiting for command to finish...")
 	err = cmd.Wait()
 	log.Printf("Command finished with error: %v", err)
+}
+
+func TestErrProcessDone(t *testing.T) {
+	testenv.MustHaveGoBuild(t)
+	path, err := testenv.GoTool()
+	if err != nil {
+		t.Errorf("finding go tool: %v", err)
+	}
+	p, err := os.StartProcess(path, []string{"go"}, &os.ProcAttr{})
+	if err != nil {
+		t.Errorf("starting test process: %v", err)
+	}
+	p.Wait()
+	if got := p.Signal(syscall.SIGKILL); got != os.ErrProcessDone {
+		t.Errorf("got %v want %v", got, os.ErrProcessDone)
+	}
 }
