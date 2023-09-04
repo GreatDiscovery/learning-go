@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/json-iterator/go"
+	"math/rand"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 type Body struct {
@@ -14,6 +16,25 @@ type Body struct {
 	Data    map[string]interface{} `json:"data,omitempty"`
 	Message string                 `json:"message"`
 	Success int                    `json:"success"`
+}
+
+// 生成随机4位字符串
+func Test4Str(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+	// 定义随机字符串的字符集
+	charset := "abcdefghijklmnopqrstuvwxyz"
+	// 生成4位随机字符串
+	randomString := generateRandomString(4, charset)
+	fmt.Println(randomString)
+}
+
+func generateRandomString(length int, charset string) string {
+	result := make([]byte, length)
+	for i := 0; i < length; i++ {
+		randomIndex := rand.Intn(len(charset))
+		result[i] = charset[randomIndex]
+	}
+	return string(result)
 }
 
 // 测试string和byte[]之间互相转换

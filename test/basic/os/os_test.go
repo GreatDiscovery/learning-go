@@ -12,7 +12,7 @@ func TestGetWd(t *testing.T) {
 }
 
 func TestOsStat(t *testing.T) {
-	fileInfo, _ := os.Stat("/Users/songbowen/go/src/learning-go")
+	fileInfo, _ := os.Stat("/Users/jiayun/.kube/sit-config")
 	println(fileInfo.Name())
 	println(fileInfo.IsDir())
 	if _, err := os.Stat("hello"); err != nil {

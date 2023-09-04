@@ -13,9 +13,11 @@ require (
 	github.com/joaojeronimo/go-crc16 v0.0.0-20140729130949-59bd0194935e
 	github.com/json-iterator/go v1.1.12
 	github.com/panjf2000/ants/v2 v2.8.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/common v0.42.0
 	github.com/robfig/cron/v3 v3.0.0
+	github.com/rogpeppe/go-internal v1.10.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.3
 	github.com/swaggo/files v1.0.1
@@ -23,6 +25,7 @@ require (
 	github.com/swaggo/swag v1.16.1
 	github.com/valyala/fastjson v1.6.4
 	go.etcd.io/bbolt v1.3.7
+	golang.org/x/sync v0.3.0
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
