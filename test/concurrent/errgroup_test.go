@@ -107,3 +107,28 @@ func TestErrGroup(t *testing.T) {
 		fmt.Println("All tasks completed successfully")
 	}
 }
+
+// 闭包
+func TestClosure(t *testing.T) {
+	g, _ := errgroup.WithContext(context.Background())
+	result := make([]int, 10)
+	for i := 0; i < 10; i++ {
+		// 重新赋值
+		i := i
+		g.Go(func() error {
+			fmt.Println(i)
+			add1 := add1(i)
+			result[i] = add1
+			return nil
+		})
+	}
+	err := g.Wait()
+	fmt.Println(result)
+	if err != nil {
+		print("error")
+	}
+}
+
+func add1(i int) int {
+	return i + 1
+}
