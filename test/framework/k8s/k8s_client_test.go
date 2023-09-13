@@ -21,7 +21,7 @@ import (
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
 )
 
-func Init_Client() (*kubernetes.Clientset, error) {
+func InitClient() (*kubernetes.Clientset, error) {
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -36,7 +36,7 @@ func Init_Client() (*kubernetes.Clientset, error) {
 		panic(err.Error())
 	}
 
-	// create the clientset
+	// create the clientSet
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
@@ -45,9 +45,9 @@ func Init_Client() (*kubernetes.Clientset, error) {
 }
 
 func TestClient(t *testing.T) {
-	clientset, _ := Init_Client()
+	clientSet, _ := InitClient()
 
-	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
+	pods, err := clientSet.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -58,7 +58,7 @@ func TestClient(t *testing.T) {
 	// - And/or cast to StatusError and use its properties like e.g. ErrStatus.Message
 	namespace := "default"
 	pod := "example-xxxxx"
-	_, err = clientset.CoreV1().Pods(namespace).Get(context.TODO(), pod, metav1.GetOptions{})
+	_, err = clientSet.CoreV1().Pods(namespace).Get(context.TODO(), pod, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		fmt.Printf("Pod %s in namespace %s not found\n", pod, namespace)
 	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
@@ -69,6 +69,4 @@ func TestClient(t *testing.T) {
 	} else {
 		fmt.Printf("Found pod %s in namespace %s\n", pod, namespace)
 	}
-
-	clientset.CoreV1().Pods(namespace).Get()
 }
