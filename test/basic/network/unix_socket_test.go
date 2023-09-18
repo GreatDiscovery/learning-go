@@ -22,7 +22,7 @@ func TestServerStart(t *testing.T) {
 	go func() {
 		defer l.Close()
 		if err := serverStart(ctx, l); err != nil && !errors.Is(err, net.ErrClosed) {
-			log.G(ctx).WithError(err).Fatal("containerd-shim: ttrpc server failure")
+			log.G(ctx).WithError(err).Fatal("containerd-shim: ttrpc rpc_server failure")
 		}
 	}()
 

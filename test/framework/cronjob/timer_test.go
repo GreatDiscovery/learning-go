@@ -26,4 +26,5 @@ func TestTimer(t *testing.T) {
 	}()
 	time.Sleep(6 * time.Second)
 	timer.Stop()
+	time.Sleep(5 * time.Second)
 }

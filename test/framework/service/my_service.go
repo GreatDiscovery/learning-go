@@ -1,5 +1,7 @@
 package service
 
+import "testing"
+
 // impl service_interface
 
 type runner struct{}
@@ -22,4 +24,9 @@ func (*runner) Update() error {
 func (*runner) Query() error {
 	//TODO implement me
 	panic("implement me")
+}
+
+func TestInterface(t *testing.T) {
+	runner := &runner{}
+	runner.Query()
 }
