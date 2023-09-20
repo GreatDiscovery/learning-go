@@ -1,6 +1,7 @@
 package rpc_server
 
 import (
+	"context"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -33,4 +34,8 @@ func NewServer() (*Server, error) {
 		connections: make(map[*serverConn]struct{}),
 		done:        make(chan struct{}),
 	}, nil
+}
+
+func (s *Server) Server(ctx context.Context, listener net.Listener) {
+
 }
