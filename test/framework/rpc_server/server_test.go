@@ -15,6 +15,7 @@ func TestServer(t *testing.T) {
 		t.Fatalf("failed to new ttrpc server: %v", err)
 	}
 	_, listener, err := NewListener()
+	defer listener.Close()
 	if err != nil {
 		t.Fatalf("failed to new ttrpc server: %v", err)
 	}
