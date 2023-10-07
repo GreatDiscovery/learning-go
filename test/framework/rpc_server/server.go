@@ -60,7 +60,7 @@ func (s *Server) Server(ctx context.Context, listener net.Listener) error {
 			}
 		}
 		sc, err := s.newConn(conn)
-		go sc.run()
+		go sc.run(ctx)
 	}
 }
 
@@ -109,14 +109,28 @@ func (s *Server) addConnection(conn *serverConn) error {
 	return nil
 }
 
-func (s *serverConn) close() error {
-	s.shutdownOnce.Do(
+func (c *serverConn) close() error {
+	c.shutdownOnce.Do(
 		func() {
-			close(s.shutdown)
+			close(c.shutdown)
 		})
 	return nil
 }
 
-func (sc *serverConn) run() error {
+func (c *serverConn) run(sctx context.Context) error {
+	type (
+		response struct {
+		}
+	)
+
+	var (
+		_, cancel = context.WithCancel(sctx)
+		stop      = make(chan struct{})
+	)
+
+	defer c.close()
+	defer cancel()
+	defer close(stop)
+
 	return nil
 }

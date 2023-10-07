@@ -2,12 +2,31 @@ package concurrent
 
 import (
 	"fmt"
+	"golang.org/x/sys/unix"
 	"math/rand"
+	"runtime"
 	"testing"
 	"time"
 )
 
 import "sync"
+
+// 把多个协程绑定到一个线程上
+func TestLockThread(t *testing.T) {
+	runtime.LockOSThread() // 将当前 goroutine 绑定到当前线程
+
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go func(n int) {
+			defer wg.Done()
+			// mac system can not get thread id.
+			fmt.Printf("Goroutine %d is running on thread %d\n", n, unix.Getpid())
+		}(i)
+	}
+
+	wg.Wait()
+}
 
 // 如果存在多个协程，其中一个协程出现了错误，我们应该如何处理
 func TestGoRoutineWithError(t *testing.T) {
