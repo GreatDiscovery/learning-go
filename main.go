@@ -28,7 +28,7 @@ func main() {
 
 	// programmatically set swagger info
 	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+	docs.SwaggerInfo.Description = "This is a sample rpc_server Petstore rpc_server."
 	docs.SwaggerInfo.Version = "1.0"
 	//docs.SwaggerInfo.Host = "127.0.0.1"
 	docs.SwaggerInfo.BasePath = "/api/v1"
