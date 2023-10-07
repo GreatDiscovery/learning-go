@@ -1,9 +1,21 @@
 package rpc_server
 
 import (
+	"context"
+	"errors"
 	"net"
 	"sync"
 	"sync/atomic"
+)
+
+const (
+	connStateActive = iota + 1 // outstanding requests
+	connStateIdle              // no requests
+	connStateClosed            // closed connection
+)
+
+var (
+	ErrServerClosed = errors.New("server closed")
 )
 
 type Server struct {
@@ -33,4 +45,78 @@ func NewServer() (*Server, error) {
 		connections: make(map[*serverConn]struct{}),
 		done:        make(chan struct{}),
 	}, nil
+}
+
+func (s *Server) Server(ctx context.Context, listener net.Listener) error {
+	s.addListener(listener)
+	defer s.closeListener(listener)
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			select {
+			case <-s.done:
+				return ErrServerClosed
+			default:
+			}
+		}
+		sc, err := s.newConn(conn)
+		go sc.run()
+	}
+}
+
+func (s *Server) addListener(l net.Listener) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.listeners[l] = struct{}{}
+}
+
+func (s *Server) closeListener(l net.Listener) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	defer delete(s.listeners, l)
+	err := l.Close()
+	return err
+}
+
+func (s *Server) newConn(conn net.Conn) (*serverConn, error) {
+	c := &serverConn{
+		server:    s,
+		conn:      conn,
+		handshake: nil,
+		state:     atomic.Value{},
+		shutdown:  make(chan struct{}),
+	}
+	c.state.Store(connStateIdle)
+	err := s.addConnection(c)
+	if err != nil {
+		c.close()
+		return nil, err
+	}
+	return c, nil
+}
+
+func (s *Server) addConnection(conn *serverConn) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	select {
+	case <-s.done:
+		return ErrServerClosed
+	default:
+	}
+
+	s.connections[conn] = struct{}{}
+	return nil
+}
+
+func (s *serverConn) close() error {
+	s.shutdownOnce.Do(
+		func() {
+			close(s.shutdown)
+		})
+	return nil
+}
+
+func (sc *serverConn) run() error {
+	return nil
 }

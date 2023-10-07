@@ -14,6 +14,14 @@ var (
 	conf = flag.String("conf", "../../conf/dev.ini", "conf")
 )
 
+func TestPwd(t *testing.T) {
+	abs, err := filepath.Abs(".")
+	if err != nil {
+	}
+	fmt.Println("pwd is ")
+	println(abs)
+}
+
 func TestCreateFile(t *testing.T) {
 	if err := CreateDirAndFile(); err != nil {
 		panic(err)
