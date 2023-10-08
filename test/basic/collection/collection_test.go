@@ -8,6 +8,13 @@ import (
 
 type StringWalker func(s string) bool
 
+func TestSort2(t *testing.T) {
+	testCase := []string{"0.1234", "0.5789", "0.0000", "0.3232", "0.1233", "0.1212"}
+	sort.Strings(testCase)
+	fmt.Printf("sort list = %v\n", testCase)
+	fmt.Printf("last element = %v\n", testCase[len(testCase)-1])
+}
+
 func TestSort(t *testing.T) {
 	testCase := []string{"1", "2", "3", "2", "4", "4"}
 	sort.Strings(testCase)
