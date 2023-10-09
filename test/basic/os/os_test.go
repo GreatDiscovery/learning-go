@@ -6,6 +6,16 @@ import (
 	"testing"
 )
 
+func init() {
+	fmt.Println("func init start!")
+}
+
+// init func is executed earlier than main func
+func TestInit(t *testing.T) {
+	fmt.Println("main start")
+	fmt.Println("end")
+}
+
 func TestGetWd(t *testing.T) {
 	dir, _ := os.Getwd()
 	fmt.Println(dir)
