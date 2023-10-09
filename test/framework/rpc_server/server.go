@@ -3,6 +3,8 @@ package rpc_server
 import (
 	"context"
 	"errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -109,6 +111,13 @@ func (s *Server) addConnection(conn *serverConn) error {
 	return nil
 }
 
+func (s *Server) deleteConnection(conn *serverConn) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	delete(s.connections, conn)
+}
+
 func (c *serverConn) close() error {
 	c.shutdownOnce.Do(
 		func() {
@@ -120,17 +129,57 @@ func (c *serverConn) close() error {
 func (c *serverConn) run(sctx context.Context) error {
 	type (
 		response struct {
+			id          uint32
+			status      *status.Status
+			data        []byte
+			closeStream bool
+			streaming   bool
 		}
 	)
 
 	var (
 		_, cancel = context.WithCancel(sctx)
-		stop      = make(chan struct{})
+		done      = make(chan struct{})
+		responses = make(chan response)
+		recvErr   = make(chan error, 1)
 	)
 
 	defer c.close()
 	defer cancel()
-	defer close(stop)
+	defer close(done)
+	defer c.server.deleteConnection(c)
+
+	sendStatus := func(id uint32, st *status.Status) bool {
+		select {
+		case responses <- response{
+			id:          id,
+			status:      st,
+			closeStream: true,
+		}:
+			return true
+		case <-c.shutdown:
+			return false
+		case <-done:
+			return false
+		}
+	}
+
+	go func(recvErr chan error) {
+		defer close(recvErr)
+		for {
+			select {
+			case <-c.shutdown:
+				return
+			case <-done:
+				return
+			default:
+			}
+
+			if !sendStatus(0, status.Newf(codes.InvalidArgument, "StreamID must be odd for client initiated streams")) {
+				return
+			}
+		}
+	}(recvErr)
 
 	return nil
 }
