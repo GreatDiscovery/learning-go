@@ -138,6 +138,7 @@ func (c *serverConn) run(sctx context.Context) error {
 	)
 
 	var (
+		ch        = newChannel(c.conn)
 		_, cancel = context.WithCancel(sctx)
 		done      = make(chan struct{})
 		responses = make(chan response)
@@ -175,6 +176,7 @@ func (c *serverConn) run(sctx context.Context) error {
 			default:
 			}
 
+			ch.recv()
 			if !sendStatus(0, status.Newf(codes.InvalidArgument, "StreamID must be odd for client initiated streams")) {
 				return
 			}
