@@ -11,6 +11,12 @@ func add(a, b int) int {
 	return a + b
 }
 
+func TestAnonymous(t *testing.T) {
+	func() {
+		fmt.Println("hello anonymous func")
+	}()
+}
+
 func TestFunc(t *testing.T) {
 	sum := add(1, 2)
 	fmt.Print(sum)
