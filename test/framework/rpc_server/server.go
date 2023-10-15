@@ -138,11 +138,12 @@ func (c *serverConn) run(sctx context.Context) error {
 	)
 
 	var (
-		ch        = newChannel(c.conn)
-		_, cancel = context.WithCancel(sctx)
-		done      = make(chan struct{})
-		responses = make(chan response)
-		recvErr   = make(chan error, 1)
+		ch           = newChannel(c.conn)
+		_, cancel    = context.WithCancel(sctx)
+		done         = make(chan struct{})
+		responses    = make(chan response)
+		recvErr      = make(chan error, 1)
+		lastStreamID uint32
 	)
 
 	defer c.close()
@@ -176,10 +177,40 @@ func (c *serverConn) run(sctx context.Context) error {
 			default:
 			}
 
-			ch.recv()
-			if !sendStatus(0, status.Newf(codes.InvalidArgument, "StreamID must be odd for client initiated streams")) {
-				return
+			mh, _, err := ch.recv()
+			if err != nil {
+				// 判断是否是预期的错误，如果是预期的错误，还可以继续处理
+				status1, ok := status.FromError(err)
+				if !ok {
+					recvErr <- err
+					return
+				}
+				if !sendStatus(mh.StreamID, status1) {
+					return
+				}
+				continue
 			}
+
+			// 通过奇偶idl来区分客户端还是server端
+			if mh.StreamID%2 != 1 {
+				if !sendStatus(0, status.Newf(codes.InvalidArgument, "StreamID must be odd for client initiated streams")) {
+					return
+				}
+				continue
+			}
+			if mh.Type == MessageTypeRequest {
+				// 确保数据处理的唯一性
+				if mh.StreamID < lastStreamID {
+					if !sendStatus(mh.StreamID, status.Newf(codes.InvalidArgument, "StreamID cannot be re-used and must increment")) {
+						return
+					}
+					continue
+				}
+				lastStreamID = mh.StreamID
+			} else if mh.Type == MessageTypeData {
+
+			}
+
 		}
 	}(recvErr)
 
