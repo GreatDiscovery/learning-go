@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+//package rpc_server;
+// protoc --go_out=. request.proto
+// https://blog.csdn.net/qq_35293533/article/details/128528405?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-128528405-blog-128008856.235%5Ev38%5Epc_relevant_sort_base3&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-128528405-blog-128008856.235%5Ev38%5Epc_relevant_sort_base3&utm_relevant_index=1
+option go_package = "/rpc_server";
+
+message Request {
+  string service = 1;
+  string method = 2;
+  bytes payload = 3;
+  int64 timeout_nano = 4;
+  repeated KeyValue metadata = 5;
+}
+
+message Response {
+  bytes payload = 2;
+}
+
+message StringList {
+  repeated string list = 1;
+}
+
+message KeyValue {
+  string key = 1;
+  string value = 2;
+}
