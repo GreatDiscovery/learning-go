@@ -3,6 +3,8 @@ package rpc_server
 import (
 	"context"
 	"errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -60,7 +62,7 @@ func (s *Server) Server(ctx context.Context, listener net.Listener) error {
 			}
 		}
 		sc, err := s.newConn(conn)
-		go sc.run()
+		go sc.run(ctx)
 	}
 }
 
@@ -109,14 +111,108 @@ func (s *Server) addConnection(conn *serverConn) error {
 	return nil
 }
 
-func (s *serverConn) close() error {
-	s.shutdownOnce.Do(
+func (s *Server) deleteConnection(conn *serverConn) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	delete(s.connections, conn)
+}
+
+func (c *serverConn) close() error {
+	c.shutdownOnce.Do(
 		func() {
-			close(s.shutdown)
+			close(c.shutdown)
 		})
 	return nil
 }
 
-func (sc *serverConn) run() error {
+func (c *serverConn) run(sctx context.Context) error {
+	type (
+		response struct {
+			id          uint32
+			status      *status.Status
+			data        []byte
+			closeStream bool
+			streaming   bool
+		}
+	)
+
+	var (
+		ch           = newChannel(c.conn)
+		_, cancel    = context.WithCancel(sctx)
+		done         = make(chan struct{})
+		responses    = make(chan response)
+		recvErr      = make(chan error, 1)
+		lastStreamID uint32
+	)
+
+	defer c.close()
+	defer cancel()
+	defer close(done)
+	defer c.server.deleteConnection(c)
+
+	sendStatus := func(id uint32, st *status.Status) bool {
+		select {
+		case responses <- response{
+			id:          id,
+			status:      st,
+			closeStream: true,
+		}:
+			return true
+		case <-c.shutdown:
+			return false
+		case <-done:
+			return false
+		}
+	}
+
+	go func(recvErr chan error) {
+		defer close(recvErr)
+		for {
+			select {
+			case <-c.shutdown:
+				return
+			case <-done:
+				return
+			default:
+			}
+
+			mh, _, err := ch.recv()
+			if err != nil {
+				// 判断是否是预期的错误，如果是预期的错误，还可以继续处理
+				status1, ok := status.FromError(err)
+				if !ok {
+					recvErr <- err
+					return
+				}
+				if !sendStatus(mh.StreamID, status1) {
+					return
+				}
+				continue
+			}
+
+			// 通过奇偶idl来区分客户端还是server端
+			if mh.StreamID%2 != 1 {
+				if !sendStatus(0, status.Newf(codes.InvalidArgument, "StreamID must be odd for client initiated streams")) {
+					return
+				}
+				continue
+			}
+			if mh.Type == MessageTypeRequest {
+				// 确保数据处理的唯一性
+				if mh.StreamID < lastStreamID {
+					if !sendStatus(mh.StreamID, status.Newf(codes.InvalidArgument, "StreamID cannot be re-used and must increment")) {
+						return
+					}
+					continue
+				}
+				lastStreamID = mh.StreamID
+			} else if mh.Type == MessageTypeData {
+
+			}
+
+		}
+	}(recvErr)
+
 	return nil
 }

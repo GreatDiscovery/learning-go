@@ -5,14 +5,61 @@ import (
 	"flag"
 	"fmt"
 	"github.com/go-ini/ini"
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"
+	"syscall"
 	"testing"
 )
 
 var (
 	conf = flag.String("conf", "../../conf/dev.ini", "conf")
 )
+
+func TestFileExist(t *testing.T) {
+	fileName1 := "tmp.1"
+	fileName2 := "tmp.2"
+	defer os.Remove(fileName1)
+	defer os.Remove(fileName2)
+
+	f1, err := os.OpenFile(fileName1, syscall.O_WRONLY|syscall.O_CREAT|syscall.O_TRUNC, 0666)
+	if err != nil {
+		return
+	}
+	f1.Sync()
+	var f1Exist bool
+	var f2Exist bool
+	_, err = os.Stat(fileName1)
+	if err != nil {
+		f1Exist = false
+	} else {
+		f1Exist = true
+	}
+	_, err = os.Stat(fileName2)
+	if err != nil {
+		f2Exist = false
+	} else {
+		f2Exist = true
+	}
+
+	assert.Equal(t, true, f1Exist)
+	assert.Equal(t, false, f2Exist)
+
+}
+
+func TestFileMode(t *testing.T) {
+	fileName := "tmp.1"
+	defer os.Remove(fileName)
+	context := "hello world"
+	var d = []byte(context)
+	// 0666表示文件的权限
+	err := os.WriteFile(fileName, d, 0666)
+	if err != nil {
+		log.Error("write fail: " + err.Error())
+		return
+	}
+}
 
 func TestPwd(t *testing.T) {
 	abs, err := filepath.Abs(".")
