@@ -2,6 +2,7 @@ package rpc_server
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"learning-go/test/framework/rpc_server/rpc_server"
@@ -27,6 +28,13 @@ type ServiceDesc struct {
 
 type serviceSet struct {
 	services map[string]*ServiceDesc
+}
+
+func (s *serviceSet) register(name string, desc *ServiceDesc) {
+	if _, ok := s.services[name]; ok {
+		panic(fmt.Errorf("duplicate service %v registered", name))
+	}
+	s.services[name] = desc
 }
 
 func (s *serviceSet) handler(ctx context.Context, req rpc_server.Request, response func(*status.Status, []byte, bool, bool) error) (*StreamHandler, error) {
