@@ -35,7 +35,10 @@ func TestGetAllSlotKey(t *testing.T) {
 }
 
 func TestCrc16(t *testing.T) {
-	println(GetCRC16("slotKey1697441090-211"))
+	println(GetCRC16("stat_slot_prefix_key{104125}"))
+	// note: redis里类似这种形式的key，prefix{hashtag}，在做hash时只会使用大括号里内容计算hash，所以
+	// redis里stat_slot_prefix_key{104125}和104125会有相同的hash值。参考cluster keyslot
+	println(GetCRC16("104125"))
 }
 
 // 根据key算出redis的slot
