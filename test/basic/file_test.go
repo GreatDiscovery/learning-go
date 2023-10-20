@@ -7,6 +7,7 @@ import (
 	"github.com/go-ini/ini"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -16,6 +17,18 @@ import (
 var (
 	conf = flag.String("conf", "../../conf/dev.ini", "conf")
 )
+
+func TestFileUtils(t *testing.T) {
+	fileName := "/Users/jiayun/Documents/github/learning-go/test/framework/emptydir/tmp.1"
+	//defer os.Remove(fileName)
+	context := "hello world"
+	var d = []byte(context)
+	// you must make dir before use this writeFile function
+	err := ioutil.WriteFile(fileName, d, 666)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 func TestFileExist(t *testing.T) {
 	fileName1 := "tmp.1"
