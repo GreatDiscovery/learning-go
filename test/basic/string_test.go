@@ -18,6 +18,17 @@ type Body struct {
 	Success int                    `json:"success"`
 }
 
+func TestPrintfPlaceHolder(t *testing.T) {
+	body := Body{
+		Code:    0,
+		Data:    nil,
+		Message: "hello",
+		Success: 1,
+	}
+	// 把结构体同时打印出来
+	fmt.Printf("body=%#v\n", body)
+}
+
 // 生成随机4位字符串
 func Test4Str(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
