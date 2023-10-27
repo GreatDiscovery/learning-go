@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"testing"
 )
 
@@ -13,12 +14,52 @@ type Books struct {
 	BookId  int    `json:"book_id,omitempty"`
 }
 
+// sort1
+type BookSlice []Books
+
+func (b BookSlice) Len() int {
+	return len(b)
+}
+func (b BookSlice) Swap(i, j int) {
+	b[i], b[j] = b[j], b[i]
+}
+func (b BookSlice) Less(i, j int) bool { // 重写 Less() 方法， 从大到小排序
+	return b[i].BookId < b[j].BookId
+}
+
 func (b Books) String() string {
 	marshal, err := json.Marshal(b)
 	if err != nil {
 		return ""
 	}
 	return string(marshal)
+}
+
+func TestSortStruct1(t *testing.T) {
+	books := []Books{
+		{"Go 语言", "www.runoob.com", "Go 语言教程", 6495407},
+		{
+			Title:   "钢铁是怎样练成的",
+			Author:  "奥斯特洛夫斯基",
+			Subject: "novel",
+			BookId:  1,
+		},
+		{
+			Title:  "平凡的世界",
+			Author: "路遥",
+			BookId: 3,
+		},
+	}
+	// sort1
+	sort.Sort(BookSlice(books))
+	fmt.Println(books)
+
+	// sort2
+	sort.Slice(books, func(i, j int) bool {
+		return books[i].Title < books[j].Title
+	})
+	fmt.Println(books)
+
 }
 
 func TestStruct(t *testing.T) {
