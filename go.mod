@@ -9,6 +9,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.3.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-ini/ini v1.67.0
+	github.com/go-playground/assert/v2 v2.2.0
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/joaojeronimo/go-crc16 v0.0.0-20140729130949-59bd0194935e
