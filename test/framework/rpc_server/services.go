@@ -2,6 +2,7 @@ package rpc_server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -30,7 +31,8 @@ type ServiceDesc struct {
 }
 
 type serviceSet struct {
-	services map[string]*ServiceDesc
+	services         map[string]*ServiceDesc
+	unaryInterceptor UnaryServerInterceptor
 }
 
 func (s *serviceSet) register(name string, desc *ServiceDesc) {
@@ -91,14 +93,23 @@ func fullPath(service string, method string) string {
 }
 
 func (s *serviceSet) unaryCall(ctx context.Context, method Method, info *UnaryServerInfo, data []byte) (p []byte, st *status.Status) {
-	//unmarshal := func(obj interface{}) error {
-	//	return protoUnmarshal(data, obj)
-	//}
-	//resp, err := s.unaryInterceptor(ctx, unmarshal, info, method)
-	//if err != nil {
-	//
-	//}
-	return nil, nil
+	unmarshal := func(obj interface{}) error {
+		return protoUnmarshal(data, obj)
+	}
+	resp, err := s.unaryInterceptor(ctx, unmarshal, info, method)
+	if err == nil {
+		if resp == nil {
+			err = errors.New("ttrpc: marshal called with nil")
+		} else {
+			p, err = protoMarshal(resp)
+		}
+	}
+
+	sts, ok := status.FromError(err)
+	if !ok {
+		sts = status.New(codes.Unknown, err.Error())
+	}
+	return p, sts
 }
 
 func protoUnmarshal(p []byte, obj interface{}) error {
@@ -111,4 +122,20 @@ func protoUnmarshal(p []byte, obj interface{}) error {
 		return status.Errorf(codes.Internal, "ttrpc: error unsupported request type: %T", v)
 	}
 	return nil
+}
+
+func protoMarshal(obj interface{}) ([]byte, error) {
+	if obj == nil {
+		return nil, nil
+	}
+	switch v := obj.(type) {
+	case proto.Message:
+		marshal, err := proto.Marshal(v)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "ttrpc: error marshaling payload: %v", err.Error())
+		}
+		return marshal, nil
+	default:
+		return nil, status.Errorf(codes.Internal, "ttrpc: error unsupported response type: %T", v)
+	}
 }
