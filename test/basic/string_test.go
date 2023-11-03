@@ -18,6 +18,27 @@ type Body struct {
 	Success int                    `json:"success"`
 }
 
+func TestSplitLastSign(t *testing.T) {
+	// 切分成rec-breakdown-realtime和1
+	str := "rec-breakdown-realtime-1"
+	index := strings.LastIndex(str, "-")
+	str1 := str[:index]
+	str2 := str[index+1:]
+	fmt.Println("str1=", str1)
+	fmt.Println("str2=", str2)
+}
+
+func TestPrintfPlaceHolder(t *testing.T) {
+	body := Body{
+		Code:    0,
+		Data:    nil,
+		Message: "hello",
+		Success: 1,
+	}
+	// 把结构体同时打印出来
+	fmt.Printf("body=%#v\n", body)
+}
+
 // 生成随机4位字符串
 func Test4Str(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
