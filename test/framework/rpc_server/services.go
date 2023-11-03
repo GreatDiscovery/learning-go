@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"learning-go/test/framework/rpc_server/rpc_server"
 	"path"
 	"time"
@@ -90,5 +91,24 @@ func fullPath(service string, method string) string {
 }
 
 func (s *serviceSet) unaryCall(ctx context.Context, method Method, info *UnaryServerInfo, data []byte) (p []byte, st *status.Status) {
+	//unmarshal := func(obj interface{}) error {
+	//	return protoUnmarshal(data, obj)
+	//}
+	//resp, err := s.unaryInterceptor(ctx, unmarshal, info, method)
+	//if err != nil {
+	//
+	//}
 	return nil, nil
+}
+
+func protoUnmarshal(p []byte, obj interface{}) error {
+	switch v := obj.(type) {
+	case proto.Message:
+		if err := proto.Unmarshal(p, v); err != nil {
+			return status.Errorf(codes.Internal, "ttrpc: error unmarshalling payload: %v", err.Error())
+		}
+	default:
+		return status.Errorf(codes.Internal, "ttrpc: error unsupported request type: %T", v)
+	}
+	return nil
 }
