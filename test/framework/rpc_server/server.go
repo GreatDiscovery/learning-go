@@ -5,6 +5,7 @@ import (
 	"errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"learning-go/test/framework/rpc_server/rpc_server"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -18,10 +19,12 @@ const (
 
 var (
 	ErrServerClosed = errors.New("server closed")
+	ErrClosed       = errors.New("ttrpc: closed")
 )
 
 type Server struct {
 	config      *serverConfig
+	services    *serviceSet
 	mu          sync.Mutex
 	listeners   map[net.Listener]struct{}
 	connections map[*serverConn]struct{} // all connections to current state
@@ -139,7 +142,7 @@ func (c *serverConn) run(sctx context.Context) error {
 
 	var (
 		ch           = newChannel(c.conn)
-		_, cancel    = context.WithCancel(sctx)
+		ctx, cancel  = context.WithCancel(sctx)
 		done         = make(chan struct{})
 		responses    = make(chan response)
 		recvErr      = make(chan error, 1)
@@ -207,6 +210,27 @@ func (c *serverConn) run(sctx context.Context) error {
 					continue
 				}
 				lastStreamID = mh.StreamID
+
+				var req rpc_server.Request
+				id := mh.StreamID
+				respond := func(status *status.Status, data []byte, streaming, closeStream bool) error {
+					select {
+					case responses <- response{
+						id:          id,
+						status:      status,
+						data:        data,
+						closeStream: closeStream,
+						streaming:   streaming,
+					}:
+						{
+						}
+					case <-done:
+						return ErrClosed
+					}
+					return nil
+				}
+
+				c.server.services.handler(ctx, req, respond)
 			} else if mh.Type == MessageTypeData {
 
 			}
