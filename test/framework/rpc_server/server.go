@@ -43,6 +43,9 @@ type serverConn struct {
 
 func NewServer() (*Server, error) {
 	config := &serverConfig{}
+	if config.interceptor == nil {
+		config.interceptor = defaultInterceptor
+	}
 	return &Server{
 		config:      config,
 		mu:          sync.Mutex{},
@@ -50,6 +53,10 @@ func NewServer() (*Server, error) {
 		connections: make(map[*serverConn]struct{}),
 		done:        make(chan struct{}),
 	}, nil
+}
+
+func (s *Server) RegisterService(name string, desc *ServiceDesc) {
+	s.services.register(name, desc)
 }
 
 func (s *Server) Server(ctx context.Context, listener net.Listener) error {
@@ -230,7 +237,7 @@ func (c *serverConn) run(sctx context.Context) error {
 					return nil
 				}
 
-				c.server.services.handler(ctx, req, respond)
+				c.server.services.handler(ctx, &req, respond)
 			} else if mh.Type == MessageTypeData {
 
 			}

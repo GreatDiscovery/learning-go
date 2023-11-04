@@ -38,3 +38,7 @@ type Handshaker interface {
 	// client-side.
 	Handshake(ctx context.Context, conn net.Conn) (net.Conn, interface{}, error)
 }
+
+func defaultInterceptor(ctx context.Context, unmarshaler Unmarshaler, _ *UnaryServerInfo, method Method) (interface{}, error) {
+	return method(ctx, unmarshaler)
+}
