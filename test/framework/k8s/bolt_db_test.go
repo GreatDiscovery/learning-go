@@ -10,6 +10,31 @@ import (
 	"unicode"
 )
 
+// /var/lib/containerd/io.containerd.metadata.v1.bolt/meta.db
+// 存着容器的metadata信息
+func TestMetaDB(t *testing.T) {
+	fileName := "meta.db"
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		// check the existence of the file, so it won't be created automatically
+		fmt.Println(err)
+		return
+	}
+
+	db, err := bbolt.Open(fileName, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func(db *bbolt.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
+
+	fmt.Printf("%s\n", getContentAsJson(db))
+}
+
 // /var/lib/docker/buildkit下面有containerdmeta.db、metadata_v2.db等db文件
 
 func TestCatDbInfo(t *testing.T) {
@@ -84,4 +109,57 @@ func removeNonPrintableLeadingBytes(inputBytes []byte) []byte {
 		newBytes = inputBytes[jsonStartIndex:]
 	}
 	return newBytes
+}
+
+func getBucket(tx *bbolt.Tx, keys ...[]byte) *bbolt.Bucket {
+	bkt := tx.Bucket(keys[0])
+	for _, key := range keys[1:] {
+		if bkt == nil {
+			break
+		}
+		bkt = bkt.Bucket(key)
+	}
+
+	return bkt
+}
+
+func TestGetBucket(t *testing.T) {
+	fileName := "meta.db"
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		// check the existence of the file, so it won't be created automatically
+		fmt.Println(err)
+		return
+	}
+
+	db, err := bbolt.Open(fileName, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func(db *bbolt.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
+
+	err = db.View(func(tx *bbolt.Tx) error {
+		// fixme what's the lease?
+		bkt := getBucket(tx, []byte("v1"), []byte("default"), []byte("leases"), []byte("what?"), []byte("containers"))
+		if bkt == nil {
+			return fmt.Errorf("bucket not found")
+		}
+		err := bkt.ForEach(func(k, v []byte) error {
+			fmt.Println("key=", k)
+			fmt.Println("value=", v)
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
 }
