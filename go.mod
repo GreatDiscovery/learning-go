@@ -27,7 +27,7 @@ require (
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.1
 	github.com/valyala/fastjson v1.6.4
-	go.etcd.io/bbolt v1.3.7
+	go.etcd.io/bbolt v1.3.8
 	golang.org/x/sync v0.3.0
 	golang.org/x/sys v0.10.0
 	google.golang.org/grpc v1.58.2
