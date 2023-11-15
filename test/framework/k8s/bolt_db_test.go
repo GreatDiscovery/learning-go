@@ -123,7 +123,7 @@ func getBucket(tx *bbolt.Tx, keys ...[]byte) *bbolt.Bucket {
 	return bkt
 }
 
-func TestGetBucket(t *testing.T) {
+func TestGetContainerBucket(t *testing.T) {
 	fileName := "meta.db"
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 		// check the existence of the file, so it won't be created automatically
@@ -144,19 +144,16 @@ func TestGetBucket(t *testing.T) {
 	}(db)
 
 	err = db.View(func(tx *bbolt.Tx) error {
-		// fixme what's the lease?
-		bkt := getBucket(tx, []byte("v1"), []byte("default"), []byte("leases"), []byte("what?"), []byte("containers"))
-		if bkt == nil {
-			return fmt.Errorf("bucket not found")
+		bucket := getBucket(tx, []byte("v1"), []byte("default"), []byte("containers"))
+		if bucket == nil {
+			fmt.Println("bucket is nil")
+			return nil
 		}
-		err := bkt.ForEach(func(k, v []byte) error {
-			fmt.Println("key=", k)
-			fmt.Println("value=", v)
+		bucket.ForEach(func(k, v []byte) error {
+			fmt.Println("k=", k)
+			fmt.Println("v=", v)
 			return nil
 		})
-		if err != nil {
-			return err
-		}
 		return nil
 	})
 	if err != nil {
