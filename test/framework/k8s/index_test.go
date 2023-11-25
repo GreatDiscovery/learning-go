@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// IndexFunc用来对label进行检索，相当于二级索引，除了uid，再针对某个标签再次建立了索引
 func testIndexFunc(obj interface{}) ([]string, error) {
 	pod := obj.(*v1.Pod)
 	return []string{pod.Labels["foo"]}, nil
