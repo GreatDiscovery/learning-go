@@ -10,6 +10,25 @@ import (
 
 var ctx = context.Background()
 
+func TestGet(t *testing.T) {
+	// 创建Redis客户端
+	client := redis.NewClient(&redis.Options{
+		//Addrs: []string{"192.168.143.120:12345"},
+		Addr: "192.168.143.120:12345",
+		// redis-go有bug，会导致某些corvus链接失败,https://github.com/redis/go-redis/issues/2616
+		Protocol: 2,
+	})
+
+	// 检查连接
+	//if err := client.Ping(ctx).Err(); err != nil {
+	//	log.Fatal("无法连接到Redis服务器:", err)
+	//}
+
+	result := client.Get(ctx, "k1")
+	fmt.Println("result=", result)
+
+}
+
 func TestPipeline(t *testing.T) {
 	// 创建Redis客户端
 	client := redis.NewClusterClient(&redis.ClusterOptions{
