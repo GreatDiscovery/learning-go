@@ -3,6 +3,7 @@ package concurrent
 import (
 	"context"
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
@@ -11,6 +12,33 @@ import (
 
 type otherContext struct {
 	context.Context
+}
+
+func TestTimeOut(t *testing.T) {
+	root := context.Background()
+	tm := time.Now().Add(3 * time.Second)
+	ctxb, cancel := context.WithDeadline(root, tm)
+	defer cancel()
+
+	ch := make(chan struct{})
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch <- struct{}{}
+	}()
+	go func(ctx context.Context) {
+		defer wg.Done()
+		select {
+		case <-ctx.Done():
+			fmt.Printf("get msg to cancel")
+			return
+		case <-ch:
+			fmt.Println("work is done")
+		}
+	}(ctxb)
+	wg.Wait()
+
 }
 
 func TestMultiValue(t *testing.T) {
