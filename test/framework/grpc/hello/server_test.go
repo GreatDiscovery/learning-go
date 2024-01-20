@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"testing"
@@ -26,6 +27,7 @@ func TestServer(t *testing.T) {
 
 	s := grpc.NewServer()
 	RegisterGreeterServer(s, &server{})
+	reflection.Register(s)
 
 	log.Println("Server is listening on port 50051...")
 	if err := s.Serve(lis); err != nil {
