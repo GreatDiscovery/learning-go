@@ -37,3 +37,25 @@ func TestSetFrame(t *testing.T) {
 	fmt.Println(all)
 	fmt.Println(all.Contains("cooking"))
 }
+
+func TestSetDifference(t *testing.T) {
+	// Create a string-based set of required classes.
+	set1 := mapset.NewSet[string]()
+	set1.Add("cooking")
+	set1.Add("english")
+	set1.Add("math")
+	set1.Add("biology")
+
+	set2 := mapset.NewSet[string]()
+	set2.Add("cooking")
+	set2.Add("english")
+	set2.Add("math")
+	set2.Add("biology")
+	set2.Add("diff1")
+	set2.Add("diff2")
+
+	difference := set2.Difference(set1)
+	fmt.Println(difference)
+	slice := difference.ToSlice()
+	fmt.Println(slice)
+}
