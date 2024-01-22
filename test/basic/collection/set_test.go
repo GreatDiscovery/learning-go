@@ -58,4 +58,5 @@ func TestSetDifference(t *testing.T) {
 	fmt.Println(difference)
 	slice := difference.ToSlice()
 	fmt.Println(slice)
+	fmt.Println(difference.Cardinality())
 }
