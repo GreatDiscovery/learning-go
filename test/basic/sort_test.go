@@ -8,8 +8,8 @@ import (
 )
 
 func TestSortByFunc(t *testing.T) {
-
-	s1 := []string{"xx-1-0", "xx-2-1", "xx-51-0", "xx-51-1", "xx-3-1", "xx-3-0"}
+	str1 := "k8redis-jiayun-simba-sh4-1-0-3 k8redis-jiayun-simba-sh4-1-0-2 k8redis-jiayun-simba-sh4-1-1-3 k8redis-jiayun-simba-sh4-1-2-3 k8redis-jiayun-simba-sh4-1-1-2 k8redis-jiayun-simba-sh4-1-2-2"
+	s1 := strings.Split(str1, " ")
 	fmt.Println("before sort =", s1)
 	sortSlice(s1)
 	fmt.Println("after sort =", s1)
@@ -25,11 +25,15 @@ func sortSlice(s1 []string) []string {
 		version2 := split2[len(split2)-2]
 		if role1 > role2 {
 			return true
+		} else if role1 == role2 {
+			if version1 < version2 {
+				return true
+			} else {
+				return false
+			}
+		} else {
+			return false
 		}
-		if version1 < version2 {
-			return true
-		}
-		return false
 	})
 	return s1
 }
