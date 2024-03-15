@@ -2,10 +2,27 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 	"strings"
 	"testing"
+	"time"
 )
+
+func shuffle(arr []int) {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(arr), func(i, j int) {
+		arr[i], arr[j] = arr[j], arr[i]
+	})
+}
+
+func TestShuffle(t *testing.T) {
+	arr := []int{1, 2, 3, 4, 5}
+	fmt.Println("Original array:", arr)
+
+	shuffle(arr)
+	fmt.Println("Shuffled array:", arr)
+}
 
 func TestSortByFunc(t *testing.T) {
 	str1 := "k8redis-jiayun-simba-sh4-1-0-3 k8redis-jiayun-simba-sh4-1-0-2 k8redis-jiayun-simba-sh4-1-1-3 k8redis-jiayun-simba-sh4-1-2-3 k8redis-jiayun-simba-sh4-1-1-2 k8redis-jiayun-simba-sh4-1-2-2"

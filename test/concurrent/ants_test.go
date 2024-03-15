@@ -57,6 +57,7 @@ func TestAnts(t *testing.T) {
 		_ = ants.Submit(syncCalculateSum)
 	}
 	wg.Wait()
+
 	fmt.Printf("running goroutines: %d\n", ants.Running())
 	fmt.Printf("finish all tasks.\n")
 
