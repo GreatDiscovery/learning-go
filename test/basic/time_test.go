@@ -26,7 +26,7 @@ var count = 0
 
 func TestTicker(t *testing.T) {
 	background := context.Background()
-	err := PollUntilContextTimeout(background, time.Second, 10*time.Second, false, printTime())
+	err := PollUntilContextTimeout(background, time.Second, 20*time.Second, false, printTime())
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -60,6 +60,7 @@ type ConditionWithContextFunc func(context.Context) (done bool, err error)
 func loopConditionUntilContext(ctx context.Context, initialInterval time.Duration, immediate, sliding bool, condition ConditionWithContextFunc) error {
 	t := time.NewTimer(initialInterval)
 	interval := initialInterval
+	ratio := time.Duration(2)
 	defer t.Stop()
 
 	var timeCh <-chan time.Time
@@ -91,7 +92,7 @@ func loopConditionUntilContext(ctx context.Context, initialInterval time.Duratio
 		}
 
 		if !sliding {
-			interval = interval * 2
+			interval = interval * ratio
 			t.Reset(interval)
 		}
 		if ok, err := func() (bool, error) {
@@ -101,7 +102,7 @@ func loopConditionUntilContext(ctx context.Context, initialInterval time.Duratio
 			return err
 		}
 		if sliding {
-			interval = interval * 2
+			interval = interval * ratio
 			t.Reset(interval)
 		}
 
