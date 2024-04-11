@@ -113,3 +113,30 @@ func workWithValue(ctx context.Context, name string) {
 		}
 	}
 }
+
+type Info struct {
+	Name string
+	Age  int
+}
+
+var key = Info{}
+
+func TestWithStruct(t *testing.T) {
+	root := context.Background()
+	info := Info{
+		Name: "gavin",
+		Age:  0,
+	}
+	c1 := context.WithValue(root, key, &info)
+	PopulateStruct(c1)
+	fmt.Println(info.Age)
+}
+
+func PopulateStruct(ctx context.Context) {
+	if ctx.Value(key) == nil {
+		fmt.Println("nil")
+		return
+	}
+	info := ctx.Value(key).(*Info)
+	info.Age = 10
+}
