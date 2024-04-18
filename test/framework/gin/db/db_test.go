@@ -47,27 +47,31 @@ func InitDb() *gorm.DB {
 	return db
 }
 
-// fixme 跑的有问题
 func TestQueryAllRecord(t *testing.T) {
 	db := InitDb()
 	var results []User
 	var data []User
-	// batch query
-	db.Model(&User{}).Clauses().FindInBatches(&results, 1, func(tx *gorm.DB, batch int) error {
 
-		// 批量处理找到的记录
-		for _, result := range results {
-			data = append(data, result)
+	batchSize := 2 // 每次拉取的批次大小
+	offset := 0
+	for {
+		// 查询数据
+		db.Limit(batchSize).Offset(offset).Find(&data)
 
+		// 处理数据
+		for _, item := range data {
+			// 处理单条数据
+			results = append(results, item)
 		}
 
-		//tx.Save(&results)
-		fmt.Println(tx.RowsAffected)    // 本次批量操作影响的记录数
-		fmt.Printf("batch=%v\n", batch) // Batch 1, 2, 3
-		// 如果返回错误会终止后续批量操作
-		return nil
-	})
-	fmt.Printf("user=%v", data)
+		// 如果当前批次的数据不足 batchSize 个，说明已经没有更多数据了
+		if len(data) < batchSize {
+			break
+		}
+		// 增加 offset，准备下一批次查询
+		offset += batchSize
+	}
+	fmt.Printf("len(user)=%v", len(results))
 }
 
 func TestConn(t *testing.T) {
