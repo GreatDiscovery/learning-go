@@ -3,6 +3,7 @@ package concurrent
 import (
 	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"
 	"time"
@@ -57,7 +58,10 @@ func TestWithValue(t *testing.T) {
 	root := context.Background()
 	sub := context.WithValue(root, key{}, "key")
 	s, _ := sub.Value(key{}).(string)
-	fmt.Printf("s=%s\n", s)
+	fmt.Printf("sub.s=%s\n", s)
+	s2 := root.Value(key{})
+	// context只能从上到下传递value，而不能从下往上传递value
+	assert.Equal(t, s2, nil)
 }
 
 func TestContext(t *testing.T) {
@@ -108,4 +112,31 @@ func workWithValue(ctx context.Context, name string) {
 			time.Sleep(1 * time.Second)
 		}
 	}
+}
+
+type Info struct {
+	Name string
+	Age  int
+}
+
+var key = Info{}
+
+func TestWithStruct(t *testing.T) {
+	root := context.Background()
+	info := Info{
+		Name: "gavin",
+		Age:  0,
+	}
+	c1 := context.WithValue(root, key, &info)
+	PopulateStruct(c1)
+	fmt.Println(info.Age)
+}
+
+func PopulateStruct(ctx context.Context) {
+	if ctx.Value(key) == nil {
+		fmt.Println("nil")
+		return
+	}
+	info := ctx.Value(key).(*Info)
+	info.Age = 10
 }
