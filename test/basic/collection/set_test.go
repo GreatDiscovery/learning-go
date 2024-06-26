@@ -60,3 +60,16 @@ func TestSetDifference(t *testing.T) {
 	fmt.Println(slice)
 	fmt.Println(difference.Cardinality())
 }
+
+func TestIterator(t *testing.T) {
+	// Create a string-based set of required classes.
+	set1 := mapset.NewSet[string]()
+	set1.Add("cooking")
+	set1.Add("english")
+	set1.Add("math")
+	set1.Add("biology")
+
+	for s := range set1.Iter() {
+		fmt.Println(s)
+	}
+}
