@@ -2,9 +2,13 @@ package mock
 
 import (
 	"github.com/golang/mock/gomock"
+	"github.com/prashantv/gostub"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
+
+var a = 5
 
 func TestQueryUser(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
@@ -28,4 +32,10 @@ func TestQueryUser(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, user, user)
 	})
+}
+
+func TestStub(t *testing.T) {
+	// 使用gostub替换全局变量
+	gostub.Stub(&a, 2)
+	assert.Equal(t, a, 2)
 }
