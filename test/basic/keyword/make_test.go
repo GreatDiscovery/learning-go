@@ -11,7 +11,3 @@ func TestMake(t *testing.T) {
 	//hash := make(map[int]bool, 10)
 	//ch := make(chan int, 5)
 }
-
-func main() {
-
-}

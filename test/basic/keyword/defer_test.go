@@ -34,7 +34,3 @@ func TestF(t *testing.T) {
 	println(f2())
 	println(f3())
 }
-
-func main() {
-
-}
