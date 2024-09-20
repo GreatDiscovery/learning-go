@@ -6,6 +6,7 @@ toolchain go1.22.6
 
 require (
 	github.com/W1llyu/ourjson v0.0.0-20180613080540-341d4810db86
+	github.com/agiledragon/gomonkey/v2 v2.11.0
 	github.com/beorn7/perks v1.0.1
 	github.com/bitly/go-simplejson v0.5.1
 	github.com/deckarep/golang-set/v2 v2.3.1
@@ -20,6 +21,7 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/panjf2000/ants/v2 v2.8.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.1.0
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/common v0.44.0
@@ -42,6 +44,7 @@ require (
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
+	gotest.tools/v3 v3.4.0
 	helm.sh/helm/v3 v3.15.3
 	k8s.io/api v0.30.0
 	k8s.io/apimachinery v0.30.0
@@ -148,7 +151,6 @@ require (
 	github.com/opencontainers/image-spec v1.1.0-rc6 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
