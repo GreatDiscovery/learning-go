@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-playground/assert/v2"
 	"sort"
 	"testing"
 )
@@ -85,4 +86,14 @@ func TestSlice(t *testing.T) {
 	testCase := []string{"1", "2", "3", "2", "4", "4"}
 	cutSlice := testCase[2]
 	fmt.Printf("cutSlice=%v", cutSlice)
+}
+
+// 在切片前面添加新元素
+func TestInsertIndex0(t *testing.T) {
+	original := []int{2, 3, 4}
+	newElement := 1
+
+	updated := append([]int{newElement}, original...)
+	assert.Equal(t, updated, []int{1, 2, 3, 4})
+	fmt.Println(updated) // 输出: [1 2 3 4]
 }
