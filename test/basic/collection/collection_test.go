@@ -109,4 +109,16 @@ func TestSliceCap(t *testing.T) {
 	// 等于从索引 1 到底层数组末尾的元素数
 	assert.Equal(t, cap(newSlice), 4)
 	assert.Equal(t, newSlice, []int{1, 2})
+
+	// 访问数组越界
+	assert.PanicMatches(t, func() {
+		fmt.Println("newSlice[3]=", newSlice[3])
+	}, "runtime error: index out of range [3] with length 2")
+
+	// newSlice不能随意更改老的slice
+	newSlice = append(newSlice, 5)
+	assert.Equal(t, len(oldSlice), 5)
+	assert.Equal(t, oldSlice, []int{0, 1, 2, 5, 4})
+	assert.Equal(t, oldSlice[3], 5)
+	assert.Equal(t, newSlice, []int{1, 2, 5})
 }
