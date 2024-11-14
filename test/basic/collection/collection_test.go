@@ -97,3 +97,16 @@ func TestInsertIndex0(t *testing.T) {
 	assert.Equal(t, updated, []int{1, 2, 3, 4})
 	fmt.Println(updated) // 输出: [1 2 3 4]
 }
+
+// len和cap的区别
+func TestSliceCap(t *testing.T) {
+	oldSlice := []int{0, 1, 2, 3, 4}
+	assert.Equal(t, len(oldSlice), 5)
+	assert.Equal(t, cap(oldSlice), 5)
+
+	newSlice := oldSlice[1:3]
+	assert.Equal(t, len(newSlice), 2)
+	// 等于从索引 1 到底层数组末尾的元素数
+	assert.Equal(t, cap(newSlice), 4)
+	assert.Equal(t, newSlice, []int{1, 2})
+}
