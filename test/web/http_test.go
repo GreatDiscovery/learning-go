@@ -1,11 +1,16 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
+	"io"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func sayHelloName(w http.ResponseWriter, r *http.Request) {
@@ -28,4 +33,46 @@ func TestWebServer(t *testing.T) {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+}
+
+func TestMockWebServer(t *testing.T) {
+	// 创建一个模拟的 HTTP 服务器
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		writer.Write([]byte("pong"))
+	}))
+	defer server.Close() // 在测试完成后关闭服务器
+
+	ping, err := Ping(server.URL)
+	assert.NoError(t, err)
+	assert.Equal(t, "pong", ping)
+}
+
+func Ping(url string) (string, error) {
+	if url == "" {
+		return "", errors.New("url is empty")
+	}
+
+	fullUrl := fmt.Sprintf("%s/ping", url)
+	method := "GET"
+
+	client := &http.Client{Timeout: time.Second * 1}
+	req, err := http.NewRequest(method, fullUrl, nil)
+
+	if err != nil {
+		return "", err
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	if string(body) != "pong" {
+		return "", errors.New(fmt.Sprintf("expect pong instead of %s", string(body)))
+	}
+	return string(body), nil
 }
