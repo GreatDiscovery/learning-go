@@ -81,6 +81,7 @@ func TestAnts(t *testing.T) {
 
 func TestAntsWithError(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	wg := sync.WaitGroup{}
 
 	pool, err := ants.NewPoolWithFunc(10, func(i interface{}) {
