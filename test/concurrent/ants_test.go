@@ -3,6 +3,7 @@ package concurrent
 // how to use ant framework to manage and recycle goroutine
 
 import (
+	"context"
 	"fmt"
 	"github.com/panjf2000/ants/v2"
 	"sync"
@@ -76,4 +77,43 @@ func TestAnts(t *testing.T) {
 	wg.Wait()
 	fmt.Printf("running goroutines: %d\n", p.Running())
 	fmt.Printf("finish all tasks, result is %d\n", sum1)
+}
+
+func TestAntsWithError(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := sync.WaitGroup{}
+
+	pool, err := ants.NewPoolWithFunc(10, func(i interface{}) {
+		defer wg.Done()
+		n := i.(int32)
+		select {
+		case <-ctx.Done():
+			fmt.Println(fmt.Sprintf("context done, %d", n))
+		default:
+			if n == 10 {
+				fmt.Println("context error,", n)
+				cancel()
+				return
+			}
+			fmt.Println(fmt.Sprintf("work doing, %d", n))
+			time.Sleep(100 * time.Millisecond)
+		}
+	})
+	if err != nil {
+		panic(err)
+	}
+	defer pool.Release()
+
+	for i := 0; i < 20; i++ {
+		if ctx.Err() != nil {
+			return
+		}
+		wg.Add(1)
+		err := pool.Invoke(int32(i))
+		time.Sleep(time.Millisecond * 100)
+		if err != nil {
+			panic(err)
+		}
+	}
+	wg.Wait()
 }
