@@ -15,6 +15,14 @@ func (p person) string() string {
 	return fmt.Sprintf("name=%s, age=%v", p.Name, p.Age)
 }
 
+func TestMapEqual(t *testing.T) {
+	m1 := map[string]int{"a": 1, "b": 2}
+	m2 := map[string]int{"a": 1, "b": 2}
+	assert.Equal(t, m1, m2)
+	m3 := map[string]int{"a": 1, "b": 3}
+	assert.Equal(t, m1, m3)
+}
+
 func TestMapPointer(t *testing.T) {
 	m := make(map[string]*person)
 	if v, ok := m["k1"]; ok {
