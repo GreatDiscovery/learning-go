@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"testing"
 	"time"
@@ -23,6 +24,10 @@ func TestTimeFormat(t *testing.T) {
 
 	formattedTime = currentTime.Format("20060102-150405")
 	fmt.Println("格式化后的时间字符串:", formattedTime)
+
+	parse, err := time.Parse("2006-01-02T15:04:05-07:00", "2006-01-02T15:04:05-07:00")
+	assert.NoError(t, err)
+	assert.Equal(t, "2006-01-02T15:04:05-07:00", parse.Format("2006-01-02T15:04:05-07:00"))
 }
 
 var count = 0
