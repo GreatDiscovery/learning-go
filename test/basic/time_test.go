@@ -20,6 +20,9 @@ func TestTimeFormat(t *testing.T) {
 
 	// 输出格式化后的时间字符串
 	fmt.Println("格式化后的时间字符串:", formattedTime)
+
+	formattedTime = currentTime.Format("20060102-150405")
+	fmt.Println("格式化后的时间字符串:", formattedTime)
 }
 
 var count = 0
