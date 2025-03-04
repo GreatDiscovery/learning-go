@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Name }}
+data:
+  APP_NAME: {{ .AppName }}
+  LOG_LEVEL: {{ .LogLevel }}
+  DB_HOST: {{ .DBHost }}
+  DB_PORT: {{ .DBPort }}

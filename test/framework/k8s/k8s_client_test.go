@@ -74,6 +74,11 @@ func TestClient(t *testing.T) {
 	}
 }
 
+func TestConfigMap(t *testing.T) {
+	clientSet, _ := InitClient()
+	client := clientSet.CoreV1().ConfigMaps("default")
+}
+
 func TestDeployment(t *testing.T) {
 	clientset, _ := InitClient()
 	deploymentsClient := clientset.AppsV1().Deployments("default")
