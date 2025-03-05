@@ -1,0 +1,14 @@
+Users:
+{{- range .Users }}
+- Name: {{ .Name }}
+  Age: {{ .Age }}
+  Address: {{ .Address.City }}, {{ .Address.State }}
+  Hobbies:
+  {{- range .Hobbies }}
+    - {{ . }}
+  {{- end }}
+  Scores:
+  {{- range $key, $value := .Scores }}
+    - {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
