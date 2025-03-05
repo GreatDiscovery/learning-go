@@ -2,6 +2,7 @@ package helm
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
@@ -71,4 +72,35 @@ func TestYamlRender(t *testing.T) {
 	// 3. 打印 ConfigMap 对象
 	fmt.Printf("ConfigMap Name: %s\n", configMap.Name)
 	fmt.Printf("Data: %v\n", configMap.Data)
+}
+
+type YamlConfig struct {
+	Server struct {
+		Listen     string `yaml:"listen"`
+		ListenPeer string `yaml:"listenPeer"`
+	} `yaml:"server"`
+}
+
+func TestYamlRenderYaml(t *testing.T) {
+	// 1. 读取 YAML 文件
+	yamlFile, err := ioutil.ReadFile("render-config-yaml.yaml")
+	if err != nil {
+		log.Fatalf("Failed to read YAML file: %v", err)
+	}
+
+	// 2. 解析 YAML 文件到 ConfigMap 对象
+	var configMap v1.ConfigMap
+	if err := yaml.Unmarshal(yamlFile, &configMap); err != nil {
+		log.Fatalf("Failed to unmarshal YAML: %v", err)
+	}
+
+	// 3. 打印 ConfigMap 对象
+	fmt.Printf("ConfigMap Name: %s\n", configMap.Name)
+	fmt.Printf("Data[cluster.yaml]: %v\n", configMap.Data["cluster.yaml"])
+
+	// 4. 读取 cluster.yaml 文件
+	var yamlConfig YamlConfig
+	yaml.Unmarshal([]byte(configMap.Data["cluster.yaml"]), &yamlConfig)
+	assert.Equal(t, yamlConfig.Server.Listen, "127.0.0.1:18000")
+	assert.Equal(t, yamlConfig.Server.ListenPeer, "127.0.0.1:18000")
 }
