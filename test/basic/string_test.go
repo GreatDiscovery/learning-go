@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/json-iterator/go"
+	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -200,4 +201,11 @@ func TestTypeAssert2(t *testing.T) {
 
 func typeof(v interface{}) string {
 	return fmt.Sprintf("%T", v)
+}
+
+func TestTrimSpace(t *testing.T) {
+	str := "Hello, World! This is a test."
+	result := strings.ReplaceAll(str, " ", "")
+	fmt.Println(result) // 输出: Hello,World!Thisisatest.
+	assert.Equal(t, "Hello,World!Thisisatest.", result)
 }
